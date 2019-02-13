@@ -65,6 +65,7 @@
         <module>cli/linux</module>
         <module>cli/windows</module>
         <module>cli/osx</module>
+        <module>cli/arm</module>
     </modules>
 
     <scm>

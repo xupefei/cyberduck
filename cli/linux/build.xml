@@ -61,8 +61,8 @@
                 <fx:jvmarg value="-Djava.net.useSystemProxies=true"/>
             </fx:platform>
             <fx:application
-                    name="duck" version="${version}.${revision}"
-                    mainClass="ch.cyberduck.cli.Terminal"/>
+                name="duck" version="${version}.${revision}"
+                mainClass="ch.cyberduck.cli.Terminal"/>
             <fx:info title="${app.name}" license="GPL" copyright="${copyright}"
                      description="${app.name}"
                      vendor="iterate GmbH">
