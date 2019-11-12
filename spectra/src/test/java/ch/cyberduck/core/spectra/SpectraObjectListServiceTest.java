@@ -160,7 +160,7 @@ public class SpectraObjectListServiceTest {
         session.open(Proxy.DIRECT, new DisabledHostKeyCallback(), new DisabledLoginCallback());
         session.login(Proxy.DIRECT, new DisabledLoginCallback(), new DisabledCancelCallback());
         final Path container = new Path(new Path("cyberduck", EnumSet.of(Path.Type.directory, Path.Type.volume)), "SPECTRA-70", EnumSet.of(Path.Type.directory));
-        final AttributedList<Path> list = new SpectraObjectListService(session).list(container, (ch.cyberduck.core.ListProgressListener) new DisabledListProgressListener() {
+        final AttributedList<Path> list = new SpectraObjectListService(session).list(container, new DisabledListProgressListener() {
             int paginate = 0;
 
             @Override
