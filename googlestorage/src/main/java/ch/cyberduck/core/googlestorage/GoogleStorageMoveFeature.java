@@ -23,7 +23,9 @@ import ch.cyberduck.core.features.Delete;
 import ch.cyberduck.core.features.Move;
 import ch.cyberduck.core.transfer.TransferStatus;
 
-import java.util.Collections;
+import java.io.IOException;
+
+import com.google.api.services.storage.model.RewriteResponse;
 
 public class GoogleStorageMoveFeature implements Move {
 
@@ -41,9 +43,23 @@ public class GoogleStorageMoveFeature implements Move {
 
     @Override
     public Path move(final Path source, final Path target, final TransferStatus status, final Delete.Callback callback, final ConnectionCallback connectionCallback) throws BackgroundException {
-        final Path copy = new GoogleStorageCopyFeature(session).copy(source, target, status, connectionCallback);
-        delete.delete(Collections.singletonMap(source, status), connectionCallback, callback);
-        return copy;
+        try {
+            String token = null;
+            RewriteResponse response;
+            do {
+                response = session.getClient().objects().rewrite(containerService.getContainer(source).getName(), containerService.getKey(source),
+                    containerService.getContainer(target).getName(), containerService.getKey(target),
+                    session.getClient().objects().get(
+                        containerService.getContainer(source).getName(), containerService.getKey(source)).execute()).setRewriteToken(token).execute();
+                token = response.getRewriteToken();
+            }
+            while(!response.getDone());
+            return new Path(target.getParent(), target.getName(), target.getType(),
+                new GoogleStorageAttributesFinderFeature(session).toAttributes(response.getResource()));
+        }
+        catch(IOException e) {
+            throw new GoogleStorageExceptionMappingService().map("Cannot copy {0}", e, source);
+        }
     }
 
     @Override
